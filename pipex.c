@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ynieto-s <ynieto-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 15:08:01 by ynieto-s          #+#    #+#             */
-/*   Updated: 2025/07/14 18:29:48 by ynieto-s         ###   ########.fr       */
+/*   Updated: 2025/07/15 14:47:00 by ynieto-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,14 +29,14 @@ int	main (int argc, char **argv, char **envp)
 		error_exit();
 	if (pid1 == 0)
 	{
-		
+		child_process(argv[1], pipefd, argv[2], envp);
 	}
 	pid2 = fork();
 	if (pid2 == -1)
 		error_exit();
 	if (pid2 == 0)
 	{
-			
+		parent_process(argv[4], pipefd, argv[3], envp);
 	}
 	close (pipefd[0]);
 	close (pipefd[1]);
@@ -45,14 +45,13 @@ int	main (int argc, char **argv, char **envp)
 	return (0);
 }
 
-
 void	error_exit(void)
 {
 	perror ("Error");
 	exit (1);
 }
 
-void	free_split(char *str)
+void	free_split(char **str)
 {
 	int	i;
 
@@ -70,7 +69,7 @@ void	free_split(char *str)
 
 void	check_envp(char **envp)
 {
-	if (!envp)
+	if (!get_path_env(envp))
 	{
 		perror("No hay variables de entorno");
 		error_exit();
@@ -117,53 +116,3 @@ void	parent_process(char *outfile, int pipefd[2], char **cmd, char **envp)
 	error_exit ();
 }
 
-char	*find_path(char *cmd, char **envp)
-{
-	char	path_env;
-	char	**split;
-	char	*dirs_list;
-	char	path;
-	
-	dirs_list = ft_split(path_env, ':');
-	if (cmd == '/')
-	{
-		if (ft_strcmp(cmd, "/", 1))
-			return (cmd);
-		else
-			return (NULL);
-		path_env = get_path_env(envp);
-		if (!path_env)
-			return (NULL);
-		while (dirs_list)
-		{
-			path = join_path(dirs_list, cmd);
-			if (path && access(cmd, X_OK) == 0)
-				return (ft_strdup(path));
-		}
-	}
-	return (NULL);
-}
-
-char	join_path(char *dir, char *cmd)
-{
-	char	*tmp;
-	char	*full;
-
-	tmp = ft_strjoin (dir, "/");
-	full = ft_strjoin (tmp, cmd);
-	free (tmp);
-	return (full);
-}
-
-char	get_path_env(char **envp)
-{
-	int	i;
-
-	i = 0;
-	while (envp[i])
-	{
-		if (ft_strcmp(envp[i], "PATH=", 5) == 0)
-			return (envp[i] + 5);
-		i++;
-	}
-}

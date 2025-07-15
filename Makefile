@@ -6,31 +6,19 @@
 #    By: ynieto-s <ynieto-s@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/20 20:22:45 by ynieto-s          #+#    #+#              #
-#    Updated: 2025/07/11 16:36:54 by ynieto-s         ###   ########.fr        #
+#    Updated: 2025/07/14 19:02:04 by ynieto-s         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = pipex
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -g
-SRC =	cost.c \
-		ft_split.c \
-		main.c \
-		moves.c \
-		operations.c \
-		position.c \
-		push.c \
-		r_both.c \
-		reverse.c \
-		rotate.c \
-		sort.c \
-		swap.c \
+SRC =	pipex.c \
 		utils.c \
-		lists_utils.c
-		
-OBJ = $(SRC:.c=.o)
+		pipex_bonus.c \
+		utils_bonus.c
 
-AR = ar rcs
+OBJ = $(SRC:.c=.o)
 
 all: $(NAME)
 
