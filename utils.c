@@ -6,7 +6,7 @@
 /*   By: ynieto-s <ynieto-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 17:18:41 by ynieto-s          #+#    #+#             */
-/*   Updated: 2025/07/15 13:54:22 by ynieto-s         ###   ########.fr       */
+/*   Updated: 2025/07/16 12:49:51 by ynieto-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,4 +70,5 @@ char	*get_path_env(char **envp)
 			return (envp[i] + 5);
 		i++;
 	}
+	return (NULL);
 }

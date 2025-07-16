@@ -6,7 +6,7 @@
 /*   By: ynieto-s <ynieto-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 15:08:01 by ynieto-s          #+#    #+#             */
-/*   Updated: 2025/07/15 14:47:00 by ynieto-s         ###   ########.fr       */
+/*   Updated: 2025/07/16 13:13:12 by ynieto-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,11 @@ int	main (int argc, char **argv, char **envp)
 	pid_t	pid1;
 	pid_t	pid2;
 	int		pipefd[2];
-	char	**split;
-	
+	char	**cmd1_arg;
+	char	**cmd2_arg;
+
+	cmd1_arg = ft_split(argv[2], ' ');
+	cmd2_arg = ft_split(argv[3], ' ');
 	if (argc != 5)
 		error_exit();
 	check_envp(envp);
@@ -29,19 +32,21 @@ int	main (int argc, char **argv, char **envp)
 		error_exit();
 	if (pid1 == 0)
 	{
-		child_process(argv[1], pipefd, argv[2], envp);
+		child_process(argv[1], pipefd, cmd1_arg, envp);
 	}
 	pid2 = fork();
 	if (pid2 == -1)
 		error_exit();
 	if (pid2 == 0)
 	{
-		parent_process(argv[4], pipefd, argv[3], envp);
+		parent_process(argv[4], pipefd, cmd2_arg, envp);
 	}
 	close (pipefd[0]);
 	close (pipefd[1]);
 	waitpid (pid1, NULL, 0);
 	waitpid (pid2, NULL, 0);
+	free_split(cmd1_arg);
+	free_split(cmd2_arg);
 	return (0);
 }
 
@@ -86,7 +91,8 @@ void	check_envp(char **envp)
 
 void	child_process(char *infile, int pipefd[2], char **cmd, char **envp)
 {
-	int	fd_in;
+	int		fd_in;
+	char	*path;
 
 	fd_in = open(infile, O_RDONLY);
 	if (fd_in < 0)
@@ -96,13 +102,17 @@ void	child_process(char *infile, int pipefd[2], char **cmd, char **envp)
 	close (fd_in);
 	close (pipefd[0]); 
 	close (pipefd[1]);
-	execve (cmd[0], cmd, envp);
+	path = find_path(cmd[0], envp);
+	if (!path)
+		error_exit();
+	execve(path, cmd, envp);
 	error_exit ();
 }
 
 void	parent_process(char *outfile, int pipefd[2], char **cmd, char **envp)
 {
-	int	fd_out;
+	int		fd_out;
+	char	*path;
 
 	fd_out = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd_out < 0)
@@ -112,7 +122,10 @@ void	parent_process(char *outfile, int pipefd[2], char **cmd, char **envp)
 	close(fd_out);
 	close(pipefd[0]);
 	close(pipefd[1]);
-	execve(cmd[0], cmd, envp);
+	path = find_path(cmd[0], envp);
+	if (!path)
+		error_exit();
+	execve(path, cmd, envp);
 	error_exit ();
 }
 
