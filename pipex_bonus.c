@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ynieto-s <ynieto-s@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yara <yara@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 18:58:24 by ynieto-s          #+#    #+#             */
-/*   Updated: 2025/07/15 18:41:36 by ynieto-s         ###   ########.fr       */
+/*   Updated: 2025/07/16 21:17:07 by yara             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,44 @@ int	**create_pipes(int num_pipes)
 	return (pipes);
 }
 
-int	main_bonus(int argc, char **argv, char **envp, int **pipes)
+int	main_bonus(int argc, char **argv, char **envp)
+{
+	int		num_cmd;
+	int 	num_pipes;
+	int		**pipes;
+	int 	i;
+	pid_t	pid;
+
+	num_cmd = count_cmd(argc, argv);
+	num_pipes = num_pipes(argc, argv);
+	pipes = create_pipes(num_pipes);
+	i = 0;
+	if (argc < 5)
+		error_exit();
+	while (i < num_cmd)
+	{
+		pid = fork();
+		if (pid == -1)
+			error_exit();
+		if (pid == 0)
+			child_process_bonus();
+		i++;
+	}
+	close_pipes();
+	wait_all();
+	free_all();
+	return (0);
+}
+
+void	close_pipes(int	num_pipes, int	**pipes)
+{
+
+}
+void	wait_all(int num_cmd)
+{
+
+}
+void	execute_all(int argc, char **argv, char **envp, int **pipes)
 {
 	
 }
