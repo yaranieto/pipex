@@ -6,7 +6,7 @@
 #    By: ynieto-s <ynieto-s@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/20 20:22:45 by ynieto-s          #+#    #+#              #
-#    Updated: 2025/07/14 19:02:04 by ynieto-s         ###   ########.fr        #
+#    Updated: 2025/07/16 15:57:49 by ynieto-s         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,9 +14,9 @@ NAME = pipex
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -g
 SRC =	pipex.c \
-		utils.c \
-		pipex_bonus.c \
-		utils_bonus.c
+		utils.c
+BONUS_SRC = pipex_bonus.c\
+			utils_bonus.c
 
 OBJ = $(SRC:.c=.o)
 
@@ -27,6 +27,9 @@ $(NAME): $(OBJ)
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
+
+bonus: $(OBJ) $(OBJ_BONUS)
+	$(NAME) $(OBJ) $(OBJ_BONUS)
 
 clean:
 	rm -f $(OBJ) 
