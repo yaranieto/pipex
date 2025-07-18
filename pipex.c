@@ -6,7 +6,7 @@
 /*   By: ynieto-s <ynieto-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 15:08:01 by ynieto-s          #+#    #+#             */
-/*   Updated: 2025/07/16 13:13:12 by ynieto-s         ###   ########.fr       */
+/*   Updated: 2025/07/18 13:39:38 by ynieto-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,16 +31,12 @@ int	main (int argc, char **argv, char **envp)
 	if (pid1 == -1)
 		error_exit();
 	if (pid1 == 0)
-	{
-		child_process(argv[1], pipefd, cmd1_arg, envp);
-	}
+		handle_input(argv[1], pipefd, cmd1_arg, envp);
 	pid2 = fork();
 	if (pid2 == -1)
 		error_exit();
 	if (pid2 == 0)
-	{
-		parent_process(argv[4], pipefd, cmd2_arg, envp);
-	}
+		handle_output(argv[4], pipefd, cmd2_arg, envp);
 	close (pipefd[0]);
 	close (pipefd[1]);
 	waitpid (pid1, NULL, 0);
@@ -89,7 +85,7 @@ void	check_envp(char **envp)
 	error_exit();
 }
 
-void	child_process(char *infile, int pipefd[2], char **cmd, char **envp)
+void	handle_input(char *infile, int pipefd[2], char **cmd, char **envp)
 {
 	int		fd_in;
 	char	*path;
@@ -109,7 +105,7 @@ void	child_process(char *infile, int pipefd[2], char **cmd, char **envp)
 	error_exit ();
 }
 
-void	parent_process(char *outfile, int pipefd[2], char **cmd, char **envp)
+void	handle_output(char *outfile, int pipefd[2], char **cmd, char **envp)
 {
 	int		fd_out;
 	char	*path;

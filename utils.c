@@ -6,7 +6,7 @@
 /*   By: ynieto-s <ynieto-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 17:18:41 by ynieto-s          #+#    #+#             */
-/*   Updated: 2025/07/16 12:49:51 by ynieto-s         ###   ########.fr       */
+/*   Updated: 2025/07/18 18:00:24 by ynieto-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,25 +26,30 @@ char	*find_path(char *cmd, char **envp)
 		else
 			return (NULL);
 	}
-		path_env = get_path_env(envp);
-		if (!path_env)
-			return (NULL);
-		dirs_list = ft_split(path_env, ':');
-		if (!dirs_list)
-			return (NULL);
-		i = 0;
-		while (dirs_list[i])
-		{
-			path = join_path(dirs_list[i], cmd);
-			if (access(path, X_OK) == 0)
-			{
-				free_split(dirs_list);
-				return (path);
-			}
-			free(path);
-			i++;
-		}
+	path_env = get_path_env(envp);
+	if (!path_env)
+		return (NULL);	
+	dirs_list = ft_split(path_env, ':');
+	if (!dirs_list)
+		return (NULL);
+	all_path(cmd, dirs_list);
 	free_split(dirs_list);
+	return (NULL);
+}
+char	*all_path(char *cmd, char **dirs_list)
+{
+	int		i;
+	char	*path;
+
+	i = 0;
+	while (dirs_list[i])
+	{
+		path = join_path(dirs_list[i], cmd);
+		if (access(path, X_OK) == 0)
+			return(path);
+		free(path);
+		i++;
+	}
 	return (NULL);
 }
 
@@ -66,7 +71,7 @@ char	*get_path_env(char **envp)
 	i = 0;
 	while (envp[i])
 	{
-		if (ft_strcmp(envp[i], "PATH=", 5) == 0)
+		if (ft_strncmp(envp[i], "PATH=", 5) == 0)
 			return (envp[i] + 5);
 		i++;
 	}
