@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ynieto-s <ynieto-s@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yara <yara@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 17:18:41 by ynieto-s          #+#    #+#             */
-/*   Updated: 2025/07/18 18:00:24 by ynieto-s         ###   ########.fr       */
+/*   Updated: 2025/07/20 22:22:22 by yara             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,9 @@ char	*find_path(char *cmd, char **envp)
 {
 	char	*path_env;
 	char	**dirs_list;
-	char	*path;
-	int		i;
-	
-	if (ft_strchr(cmd, "/"))
+
+	printf("find_path: buscando '%s'\n", cmd);
+	if (ft_strchr(cmd, '/'))
 	{
 		if (access(cmd, X_OK) == 0)
 			return (ft_strdup(cmd));
@@ -72,8 +71,12 @@ char	*get_path_env(char **envp)
 	while (envp[i])
 	{
 		if (ft_strncmp(envp[i], "PATH=", 5) == 0)
+		{
+			printf("ENCONTRADO: %s\n", envp[i]);
 			return (envp[i] + 5);
+		}
 		i++;
 	}
+	printf("no ENCONTRADO");
 	return (NULL);
 }

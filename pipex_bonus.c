@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ynieto-s <ynieto-s@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yara <yara@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 18:58:24 by ynieto-s          #+#    #+#             */
-/*   Updated: 2025/07/18 17:50:56 by ynieto-s         ###   ########.fr       */
+/*   Updated: 2025/07/19 19:22:22 by yara             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,27 +17,26 @@ int	main_bonus(int argc, char **argv, char **envp)
 	int		num_cmd;
 	int 	numb_pipes;
 	int		**pipes;
-	int 	i;
 
 	if (argc < 5)
 		error_exit();
-	num_cmd = count_cmd(argc, argv);
-	numb_pipes = num_pipes(argc, argv);
-	pipes = create_pipes(num_pipes);
+	num_cmd = count_cmd(argc);
+	numb_pipes = num_pipes(argc);
+	pipes = create_pipes(numb_pipes);
 	check_envp(envp);
 	execute_all_bonus(argc, argv, envp, pipes);
-	close_pipes(num_pipes, pipes);
+	close_pipes(numb_pipes, pipes);
 	wait_all(num_cmd);
-	free_all(num_pipes, pipes);
+	free_all(numb_pipes, pipes);
 	return (0);
 }
 
-void	close_pipes(int	num_pipes, int	**pipes)
+void	close_pipes(int	numb_pipes, int	**pipes)
 {
 	int	i;
 
 	i = 0;
-	while (i < num_pipes)
+	while (i < numb_pipes)
 	{
 		close(pipes[i][0]);
 		close(pipes[i][1]);
@@ -46,15 +45,13 @@ void	close_pipes(int	num_pipes, int	**pipes)
 }
 void	execute_all_bonus(int argc, char **argv, char **envp, int **pipes)
 {
-	int		numb_pipes;
-	int		num_cmd;
 	int		i;
+	int		num_cmd;
 	pid_t	pid;
 	char	*path;
 
 	i = 0;
-	num_cmd = count_cmd(argc, argv);
-	numb_pipes = num_cmd - 1;
+	num_cmd = count_cmd(argc);
 	path = find_path(argv[i + 2], envp);
 	while (i < num_cmd)
 	{
@@ -72,19 +69,17 @@ void	execute_all_bonus(int argc, char **argv, char **envp, int **pipes)
 void	input_output_bonus(int	i, int argc, char **argv, char **envp, 
 		int **pipes)
 {
-	int		infile;
-	int		outfile;
 	char	*path;
 	char	**cmd;
 	int		num_pipes;
 
-	num_pipes = count_cmd(argc, argv) - 1;
+	num_pipes = count_cmd(argc) - 1;
 	cmd = ft_split(argv[i + 2], ' ');
 	path = find_path(cmd[0], envp);
 	if (i == 0)
-		handle_input_bonus(argc, argv, envp, pipes, num_pipes);
-	else if (i == count_cmd(argc, argv) - 1)
-		handle_output_bonus(i, argc, argv, envp, pipes, num_pipes);
+		handle_input_bonus(argv, pipes, num_pipes);
+	else if (i == count_cmd(argc) - 1)
+		handle_output_bonus(i, argc, argv, pipes, num_pipes);
 	else
 	{
 		dup2(pipes[i - 1][0], STDIN_FILENO);
@@ -99,8 +94,7 @@ void	input_output_bonus(int	i, int argc, char **argv, char **envp,
 	error_exit();
 }
 
-void	handle_input_bonus(int argc, char **argv, char **envp, int **pipes,
-		int	num_pipes)
+void	handle_input_bonus(char **argv, int **pipes, int num_pipes)
 {
 	int	infile;
 
@@ -113,8 +107,8 @@ void	handle_input_bonus(int argc, char **argv, char **envp, int **pipes,
 	close_pipes(num_pipes, pipes);
 }
 
-void	handle_output_bonus(int i, int argc, char **argv, char**envp, 
-		int **pipes, int num_pipes)
+void	handle_output_bonus(int i, int argc, char **argv, int **pipes,
+		int num_pipes)
 {
 	int	outfile;
 

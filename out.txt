@@ -1,0 +1,2 @@
+find_path: buscando 'ls'
+ENCONTRADO: PATH=/home/yara/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin:/home/yara/.local/bin:/home/yara/.local/bin:/home/yara/.local/bin

@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   utils_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ynieto-s <ynieto-s@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yara <yara@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 18:58:46 by ynieto-s          #+#    #+#             */
-/*   Updated: 2025/07/18 13:02:10 by ynieto-s         ###   ########.fr       */
+/*   Updated: 2025/07/19 13:00:41 by yara             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int	count_cmd(int argc, char **argv)
+int	count_cmd(int argc)
 {
 	int	num_cmd;
 
@@ -22,9 +22,9 @@ int	count_cmd(int argc, char **argv)
 	return (num_cmd);
 }
 
-int	num_pipes(int argc, char **argv)
+int	num_pipes(int argc)
 {
-	return (count_cmd(argc, argv) - 1);
+	return (count_cmd(argc) - 1);
 }
 
 int	**create_pipes(int num_pipes)
