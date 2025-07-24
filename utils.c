@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yara <yara@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: ynieto-s <ynieto-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 17:18:41 by ynieto-s          #+#    #+#             */
-/*   Updated: 2025/07/20 22:22:22 by yara             ###   ########.fr       */
+/*   Updated: 2025/07/23 17:36:52 by ynieto-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@ char	*find_path(char *cmd, char **envp)
 {
 	char	*path_env;
 	char	**dirs_list;
+	char	*path;
 
-	printf("find_path: buscando '%s'\n", cmd);
 	if (ft_strchr(cmd, '/'))
 	{
 		if (access(cmd, X_OK) == 0)
@@ -27,14 +27,15 @@ char	*find_path(char *cmd, char **envp)
 	}
 	path_env = get_path_env(envp);
 	if (!path_env)
-		return (NULL);	
+		return (NULL);
 	dirs_list = ft_split(path_env, ':');
 	if (!dirs_list)
 		return (NULL);
-	all_path(cmd, dirs_list);
+	path = all_path(cmd, dirs_list);
 	free_split(dirs_list);
-	return (NULL);
+	return (path);
 }
+
 char	*all_path(char *cmd, char **dirs_list)
 {
 	int		i;
@@ -44,8 +45,13 @@ char	*all_path(char *cmd, char **dirs_list)
 	while (dirs_list[i])
 	{
 		path = join_path(dirs_list[i], cmd);
+		if (!path)
+		{
+			i++;
+			continue ;
+		}
 		if (access(path, X_OK) == 0)
-			return(path);
+			return (path);
 		free(path);
 		i++;
 	}
@@ -71,10 +77,7 @@ char	*get_path_env(char **envp)
 	while (envp[i])
 	{
 		if (ft_strncmp(envp[i], "PATH=", 5) == 0)
-		{
-			printf("ENCONTRADO: %s\n", envp[i]);
 			return (envp[i] + 5);
-		}
 		i++;
 	}
 	printf("no ENCONTRADO");

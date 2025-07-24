@@ -1,25 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlen.c                                        :+:      :+:    :+:   */
+/*   ft_substr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ynieto-s <ynieto-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/14 17:40:27 by ynieto-s          #+#    #+#             */
-/*   Updated: 2025/07/21 17:46:29 by ynieto-s         ###   ########.fr       */
+/*   Created: 2025/07/23 16:14:18 by ynieto-s          #+#    #+#             */
+/*   Updated: 2025/07/23 17:09:35 by ynieto-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int	ft_strlen(const char *str)
+char	*ft_substr(char *s, int start, int len)
 {
-	int	i;
+	int		i;
+	char	*res;
 
 	i = 0;
-	if (!str)
+	if (!s)
 		return (0);
-	while (str[i])
-		i++;
-	return (i);
+	if (start > ft_strlen(s))
+	{
+		res = malloc(sizeof(char) * (1));
+		if (!res)
+			return (NULL);
+		res[0] = '\0';
+		return (res);
+	}
+	if (ft_strlen(s) - start < len)
+		len = ft_strlen(s) - start;
+	res = malloc(sizeof(char) * (len + 1));
+	if (!res)
+		return (NULL);
+	while (start < ft_strlen(s) && i < len && s[start])
+		res[i++] = s[start++];
+	res[i] = '\0';
+	return (res);
 }

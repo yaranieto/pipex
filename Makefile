@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: yara <yara@student.42.fr>                  +#+  +:+       +#+         #
+#    By: ynieto-s <ynieto-s@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/20 20:22:45 by ynieto-s          #+#    #+#              #
-#    Updated: 2025/07/16 21:17:04 by yara             ###   ########.fr        #
+#    Updated: 2025/07/23 17:06:42 by ynieto-s         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,9 +15,29 @@ BONUS_NAME = pipex_bonus
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -g
 SRC =	pipex.c \
-		utils.c
+		utils.c \
+		tools.c \
+		input_output.c \
+		ft_split.c \
+		ft_strchr.c \
+		ft_strjoin.c \
+		ft_strlen.c \
+		ft_strncmp.c \
+		ft_strdup.c
+		
 BONUS_SRC = pipex_bonus.c\
-			utils_bonus.c
+			utils_bonus.c \
+			tools.c \
+			utils.c \
+			close_bonus.c \
+			ft_split.c \
+			ft_strchr.c \
+			ft_strjoin.c \
+			ft_strlen.c \
+			ft_strncmp.c \
+			ft_strdup.c \
+			ft_substr.c \
+			get_next_line.c
 
 OBJ = $(SRC:.c=.o)
 BONUS_OBJ = $(BONUS_SRC:.c=.o)

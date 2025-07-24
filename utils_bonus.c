@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yara <yara@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: ynieto-s <ynieto-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 18:58:46 by ynieto-s          #+#    #+#             */
-/*   Updated: 2025/07/19 13:00:41 by yara             ###   ########.fr       */
+/*   Updated: 2025/07/22 12:59:39 by ynieto-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	count_cmd(int argc)
 	int	num_cmd;
 
 	num_cmd = argc - 3;
-	if (argc < 5 )
+	if (argc < 5)
 		return (0);
 	return (num_cmd);
 }
@@ -31,22 +31,22 @@ int	**create_pipes(int num_pipes)
 {
 	int	**pipes;
 	int	i;
-	
+
 	i = 0;
 	pipes = malloc(sizeof(int *) * num_pipes);
 	if (!pipes)
-		error_exit();
+		error_exit("Error no pipes");
 	while (i < num_pipes)
 	{
 		pipes[i] = malloc(sizeof(int) * 2);
 		if (!pipes[i])
-			error_exit();
+			error_exit("Error: memory create_pipes");
 		if (pipe(pipes[i]) == -1)
-			error_exit();
+			error_exit("Error: create_pipes");
 		i++;
 	}
 	if (!pipes)
-		error_exit();
+		error_exit("Error no pipes");
 	return (pipes);
 }
 
@@ -75,4 +75,3 @@ void	free_all(int num_pipes, int **pipes)
 	}
 	free(pipes);
 }
-

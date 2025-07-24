@@ -3,120 +3,126 @@
 /*                                                        :::      ::::::::   */
 /*   pipex_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: yara <yara@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: ynieto-s <ynieto-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 18:58:24 by ynieto-s          #+#    #+#             */
-/*   Updated: 2025/07/19 19:22:22 by yara             ###   ########.fr       */
+/*   Updated: 2025/07/24 15:03:26 by ynieto-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int	main_bonus(int argc, char **argv, char **envp)
+int	main(int argc, char **argv, char **envp)
 {
-	int		num_cmd;
-	int 	numb_pipes;
-	int		**pipes;
+	t_pipex	px;
 
 	if (argc < 5)
-		error_exit();
-	num_cmd = count_cmd(argc);
-	numb_pipes = num_pipes(argc);
-	pipes = create_pipes(numb_pipes);
-	check_envp(envp);
-	execute_all_bonus(argc, argv, envp, pipes);
-	close_pipes(numb_pipes, pipes);
-	wait_all(num_cmd);
-	free_all(numb_pipes, pipes);
+		error_exit("Menos de 4 argumentos");
+	px.is_heredoc = 0;
+	if (ft_strncmp(argv[1], "here_doc", 8) == 0)
+		px.is_heredoc = 1;
+	px.argc = argc;
+	px.argv = argv;
+	px.envp = envp;
+	if (px.is_heredoc)
+		px.num_cmd = count_cmd(argc - 1);
+	else
+		px.num_cmd = count_cmd(argc);
+	px.num_pipes = num_pipes(px.argc);
+	px.pipes = create_pipes(px.num_pipes);
+	check_envp(px.envp);
+	execute_all_bonus(&px);
+	close_pipes(px.num_pipes, px.pipes);
+	wait_all(px.num_cmd);
+	free_all(px.num_pipes, px.pipes);
 	return (0);
 }
 
-void	close_pipes(int	numb_pipes, int	**pipes)
-{
-	int	i;
-
-	i = 0;
-	while (i < numb_pipes)
-	{
-		close(pipes[i][0]);
-		close(pipes[i][1]);
-		i++;
-	}
-}
-void	execute_all_bonus(int argc, char **argv, char **envp, int **pipes)
+void	execute_all_bonus(t_pipex *px)
 {
 	int		i;
-	int		num_cmd;
 	pid_t	pid;
-	char	*path;
 
 	i = 0;
-	num_cmd = count_cmd(argc);
-	path = find_path(argv[i + 2], envp);
-	while (i < num_cmd)
+	while (i < px->num_cmd)
 	{
 		pid = fork();
 		if (pid == -1)
-			error_exit();
+			error_exit("error pid");
 		if (pid == 0)
-			input_output_bonus(i, argc, argv, envp, pipes);
-		
+			input_output_bonus(i, px);
 		i++;
 	}
-	free(path);
 }
 
-void	input_output_bonus(int	i, int argc, char **argv, char **envp, 
-		int **pipes)
+void	input_output_bonus(int i, t_pipex *px)
 {
 	char	*path;
 	char	**cmd;
-	int		num_pipes;
+	int		**pipes;
 
-	num_pipes = count_cmd(argc) - 1;
-	cmd = ft_split(argv[i + 2], ' ');
-	path = find_path(cmd[0], envp);
+	pipes = px->pipes;
+	cmd = cmd_index(i, px);
+	path = find_path(cmd[0], px->envp);
 	if (i == 0)
-		handle_input_bonus(argv, pipes, num_pipes);
-	else if (i == count_cmd(argc) - 1)
-		handle_output_bonus(i, argc, argv, pipes, num_pipes);
+		handle_input_bonus(px);
+	else if (i == px->num_cmd - 1)
+		handle_output_bonus(i, px);
 	else
 	{
 		dup2(pipes[i - 1][0], STDIN_FILENO);
 		dup2(pipes[i][1], STDOUT_FILENO);
-		close_pipes(num_pipes, pipes);
+		close_pipes(px->num_pipes, px->pipes);
 	}
 	if (!path)
-		error_exit();
-	execve(path, cmd, envp);
+		error_exit("Error path");
+	execve(path, cmd, px->envp);
 	free(path);
 	free_split(cmd);
-	error_exit();
+	error_exit("Error execve");
 }
 
-void	handle_input_bonus(char **argv, int **pipes, int num_pipes)
+void	handle_input_bonus(t_pipex *px)
 {
 	int	infile;
+	int	here_pipe[2];
 
-	infile = open(argv[1], O_RDONLY);
-	if (infile < 0)
-		error_exit();
-	dup2(infile, STDIN_FILENO);
-	dup2(pipes[0][1], STDOUT_FILENO);
-	close(infile);
-	close_pipes(num_pipes, pipes);
+	if (px->is_heredoc)
+	{
+		if (pipe(here_pipe))
+			error_exit("error_exit");
+		handle_input_heredoc(px->argv[2], here_pipe);
+		dup2(here_pipe[0], STDIN_FILENO);
+		close(here_pipe[0]);
+		dup2(px->pipes[0][1], STDOUT_FILENO);
+		close(px->pipes[0][1]);
+	}
+	else
+	{
+		infile = open(px->argv[1], O_RDONLY);
+		if (infile < 0)
+			error_exit("Error no inflie");
+		dup2(infile, STDIN_FILENO);
+		dup2(px->pipes[0][1], STDOUT_FILENO);
+		close(infile);
+		close_pipes(px->num_pipes, px->pipes);
+	}
 }
 
-void	handle_output_bonus(int i, int argc, char **argv, int **pipes,
-		int num_pipes)
+void	handle_output_bonus(int i, t_pipex *px)
 {
 	int	outfile;
+	int	flags;
 
-	outfile = open(argv[argc - 1], O_WRONLY| O_CREAT | O_TRUNC, 0644);
+	if (px->is_heredoc)
+		flags = O_WRONLY | O_CREAT | O_APPEND;
+	else
+		flags = O_WRONLY | O_CREAT | O_TRUNC;
+	outfile = open(px->argv[px->argc - 1], flags, 0644);
 	if (outfile < 0)
-		error_exit();
-	dup2(pipes[i - 1][0], STDIN_FILENO);
+		error_exit("Error no outfile");
+	dup2(px->pipes[i - 1][0], STDIN_FILENO);
 	dup2(outfile, STDOUT_FILENO);
 	close(outfile);
-	close_pipes(num_pipes, pipes);
+	close_pipes(px->num_pipes, px->pipes);
 }
