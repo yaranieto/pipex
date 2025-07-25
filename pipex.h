@@ -6,7 +6,7 @@
 /*   By: ynieto-s <ynieto-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 15:22:30 by ynieto-s          #+#    #+#             */
-/*   Updated: 2025/07/23 17:08:36 by ynieto-s         ###   ########.fr       */
+/*   Updated: 2025/07/25 19:14:00 by ynieto-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef struct s_pipex
 {
@@ -37,6 +38,7 @@ char	*ft_strdup(const char *str);
 int		ft_strlen(const char *str);
 char	*ft_strjoin(char const *s1, char const *s2);
 char	*ft_substr(char *s, int start, int len);
+void	ft_putstr_fd(const char *s, int fd);
 void	check_envp(char **envp);
 void	check_pipe(char **argv, char **cmd1_arg, char **cmd2_arg, char **envp);
 void	error_exit(const char *msg);
@@ -56,10 +58,5 @@ void	execute_all_bonus(t_pipex *px);
 void	input_output_bonus(int i, t_pipex *px);
 void	handle_input_bonus(t_pipex *px);
 void	handle_output_bonus(int i, t_pipex *px);
-void	handle_input_heredoc(char *limiter, int *pipefd);
+void	handle_input_heredoc(const char *limiter, int here_pipe[2]);
 char	**cmd_index(int i, t_pipex *px);
-char	*trim_before_newline(char *input_str);
-char	*extract_line(char *input_str);
-char	*read_buffer(int fd, char *buffer);
-char	*free_buffer(char **buffer);
-char	*get_next_line(int fd);

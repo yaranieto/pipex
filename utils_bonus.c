@@ -6,7 +6,7 @@
 /*   By: ynieto-s <ynieto-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 18:58:46 by ynieto-s          #+#    #+#             */
-/*   Updated: 2025/07/22 12:59:39 by ynieto-s         ###   ########.fr       */
+/*   Updated: 2025/07/25 16:31:24 by ynieto-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,9 @@ int	**create_pipes(int num_pipes)
 	{
 		pipes[i] = malloc(sizeof(int) * 2);
 		if (!pipes[i])
-			error_exit("Error: memory create_pipes");
+			error_exit("Error no pipes");
 		if (pipe(pipes[i]) == -1)
-			error_exit("Error: create_pipes");
+			error_exit("Error no pipes");
 		i++;
 	}
 	if (!pipes)

@@ -6,7 +6,7 @@
 /*   By: ynieto-s <ynieto-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/22 13:00:07 by ynieto-s          #+#    #+#             */
-/*   Updated: 2025/07/24 17:49:40 by ynieto-s         ###   ########.fr       */
+/*   Updated: 2025/07/25 19:15:54 by ynieto-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,28 +25,29 @@ void	close_pipes(int numb_pipes, int **pipes)
 	}
 }
 
-void	handle_input_heredoc(char *limiter, int *pipefd)
+void	handle_input_heredoc(const char *limiter, int here_pipe[2])
 {
 	char	*line;
+	size_t	len;
+	ssize_t	nread;
 
-	close(pipefd[0]);
+	line = NULL;
+	len = 0;
 	while (1)
 	{
 		write(1, "heredoc> ", 9);
-		line = get_next_line(STDIN_FILENO);
-		if (!line)
+		fflush(stdout);
+		nread = getline(&line, &len, stdin);
+		if (nread == -1)
 			break ;
-		if (ft_strlen(line) == ft_strlen(limiter) + 1 &&
-			ft_strncmp(line, limiter, ft_strlen(limiter)) == 0
-			&& line[ft_strlen(limiter)] == '\n')
-		{
-			free(line);
+		if (line[nread - 1] == '\n')
+			line[nread - 1] = '\0';
+		if (strcmp(line, limiter) == 0)
 			break ;
-		}
-		write(pipefd[1], line, ft_strlen(line));
-		free(line);
+		write(here_pipe[1], line, strlen(line));
+		write(here_pipe[1], "\n", 1);
 	}
-	close(pipefd[1]);
+	free(line);
 }
 
 char	**cmd_index(int i, t_pipex *px)

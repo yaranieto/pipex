@@ -6,7 +6,7 @@
 #    By: ynieto-s <ynieto-s@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/04/20 20:22:45 by ynieto-s          #+#    #+#              #
-#    Updated: 2025/07/23 17:06:42 by ynieto-s         ###   ########.fr        #
+#    Updated: 2025/07/25 19:13:14 by ynieto-s         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,7 +37,6 @@ BONUS_SRC = pipex_bonus.c\
 			ft_strncmp.c \
 			ft_strdup.c \
 			ft_substr.c \
-			get_next_line.c
 
 OBJ = $(SRC:.c=.o)
 BONUS_OBJ = $(BONUS_SRC:.c=.o)
@@ -63,4 +62,5 @@ fclean: clean
 
 re : fclean all
 
-.PHONY : all, clean, fclean, re, bonus
+
+.PHONY : all clean fclean re bonus
