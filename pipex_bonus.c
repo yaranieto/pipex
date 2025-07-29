@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ynieto-s <ynieto-s@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yara <yara@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 18:58:24 by ynieto-s          #+#    #+#             */
-/*   Updated: 2025/07/29 18:15:49 by ynieto-s         ###   ########.fr       */
+/*   Updated: 2025/07/29 22:01:17 by yara             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,8 @@ void	handle_input_bonus(t_pipex *px)
 		handle_input_heredoc(px->argv[2], px->pipe_molon);
 		dup2(px->pipe_molon[0], STDIN_FILENO);
 		close(px->pipe_molon[0]);
-		dup2(px->pipe_molon[1], STDOUT_FILENO);
+		dup2(px->pipes[0][1], STDOUT_FILENO);
+		close_pipes(px->num_pipes, px->pipes);
 		close(px->pipe_molon[1]);
 		return ;
 	}

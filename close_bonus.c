@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   close_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ynieto-s <ynieto-s@student.42.fr>          +#+  +:+       +#+        */
+/*   By: yara <yara@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/22 13:00:07 by ynieto-s          #+#    #+#             */
-/*   Updated: 2025/07/29 17:55:33 by ynieto-s         ###   ########.fr       */
+/*   Updated: 2025/07/29 21:47:47 by yara             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ void	close_pipes(int numb_pipes, int **pipes)
 void	handle_input_heredoc(char *limiter, int *pipefd)
 {
 	char	*line;
-
+	
+	line = NULL;
 	close(pipefd[0]);
 	while (1)
 	{
@@ -36,13 +37,16 @@ void	handle_input_heredoc(char *limiter, int *pipefd)
 		line = get_next_line(0);
 		if (!line)
 			break ;
-		printf("LINE: %s\n", line);
+		//printf("LINE: %s\n", line);
 		if (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0)
 		{
+			printf("LINE: %s\n", limiter);
 			free(line);
-			exit(0);
+			break ;
+			exit(1);
 		}
 		ft_putstr_fd(line, pipefd[1]);
+		ft_putstr_fd("\n", pipefd[1]);  
 		free(line);
 	}
 	close(pipefd[1]);
