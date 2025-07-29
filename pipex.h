@@ -6,7 +6,7 @@
 /*   By: ynieto-s <ynieto-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 15:22:30 by ynieto-s          #+#    #+#             */
-/*   Updated: 2025/07/25 19:14:00 by ynieto-s         ###   ########.fr       */
+/*   Updated: 2025/07/29 13:29:16 by ynieto-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <aio.h>
 
 typedef struct s_pipex
 {

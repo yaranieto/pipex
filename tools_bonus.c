@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   close_bonus.c                                      :+:      :+:    :+:   */
+/*   tools_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ynieto-s <ynieto-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/22 13:00:07 by ynieto-s          #+#    #+#             */
-/*   Updated: 2025/07/25 19:15:54 by ynieto-s         ###   ########.fr       */
+/*   Updated: 2025/07/29 14:43:42 by ynieto-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	handle_input_heredoc(const char *limiter, int here_pipe[2])
 	{
 		write(1, "heredoc> ", 9);
 		fflush(stdout);
-		nread = getline(&line, &len, stdin);
+		nread = getline(&line, &len, stdin); //cambiar por read
 		if (nread == -1)
 			break ;
 		if (line[nread - 1] == '\n')
