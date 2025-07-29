@@ -5,102 +5,120 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ynieto-s <ynieto-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/23 16:16:00 by ynieto-s          #+#    #+#             */
-/*   Updated: 2025/07/24 14:42:31 by ynieto-s         ###   ########.fr       */
+/*   Created: 2024/02/01 19:31:33 by nquecedo          #+#    #+#             */
+/*   Updated: 2025/07/29 16:30:59 by ynieto-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 #define BUFFER_SIZE 42
+#  define FD_OPEN 256
 
-char	*trim_before_newline(char *input_str)
+
+static char	*ft_strjoin_gnl(char *s1, char *s2)
 {
-	char	*trimmed_str;
-	char	*newline_ptr;
-	int		len;
+	char	*exit;
+	size_t	s1_len;
+	size_t	s2_len;
 
-	newline_ptr = ft_strchr(input_str, '\n');
-	if (!newline_ptr)
-	{
-		trimmed_str = NULL;
-		return (free_buffer(&input_str));
-	}
-	else
-		len = (newline_ptr - input_str) + 1;
-	if (!input_str[len])
-		return (free_buffer(&input_str));
-	trimmed_str = ft_substr(input_str, len, ft_strlen(input_str) - len);
-	free_buffer(&input_str);
-	if (!trimmed_str)
+	if (!s2)
 		return (NULL);
-	return (trimmed_str);
+	s1_len = ft_strlen(s1);
+	s2_len = ft_strlen(s2);
+	exit = (char *)malloc(s1_len + s2_len + 1);
+	if (exit == NULL)
+		return (NULL);
+	ft_memcpy(exit, s1, s1_len);
+	ft_memcpy((exit + s1_len), s2, s2_len);
+	exit[s1_len + s2_len] = '\0';
+	free(s1);
+	return (exit);
 }
 
-char	*extract_line(char *input_str)
+static char	*ft_read_fd(char *buffer, char *line, int fd)
 {
-	char	*extracted_line;
-	char	*newline_ptr;
-	int		len;
+	int	bites_read;
 
-	newline_ptr = ft_strchr(input_str, '\n');
-	if (newline_ptr)
-	len = (newline_ptr - input_str) + 1;
-	else
-	len = ft_strlen(input_str);
-	extracted_line = ft_substr(input_str, 0, len);
-	if (!extracted_line)
-		return (NULL);
-	return (extracted_line);
-} 
-
-char	*read_buffer(int fd, char *buffer)
-{
-	int		bytes_read;
-	char	*new_buffer;
-
-	bytes_read = 1;
-	new_buffer = malloc((BUFFER_SIZE + 1) * sizeof(char));
-	if (!new_buffer)
-		return (free_buffer(&new_buffer));
-	new_buffer[0] = '\0';
-	while (bytes_read > 0)
+	bites_read = BUFFER_SIZE;
+	if (ft_strlen(buffer) > 0)
+		line = ft_strjoin_gnl(line, buffer);
+	while (!ft_strchr(buffer, '\n') && bites_read != 0)
 	{
-		bytes_read = read (fd, new_buffer, BUFFER_SIZE);
-		if (bytes_read > 0)
+		bites_read = read(fd, buffer, BUFFER_SIZE);
+		if (bites_read < 0)
 		{
-			new_buffer[bytes_read] = '\0';
-			buffer = ft_strjoin(buffer, new_buffer);
-			if (ft_strchr(buffer, '\n'))
-				break ;
+			buffer[0] = '\0';
+			return (free(line), NULL);
 		}
+		buffer[bites_read] = '\0';
+		line = ft_strjoin_gnl(line, buffer);
 	}
-	free(new_buffer);
-	if (bytes_read == -1)
-		return (free_buffer(&buffer));
-	return (buffer);
+	return (line);
+}
+
+static char	*ft_prepare_line(char *line)
+{
+	char	*new_line;
+	int		new_size;
+
+	if (ft_strchr(line, '\n'))
+		new_size = ft_strchr(line, '\n') - line + 1;
+	else
+		new_size = ft_strlen(line);
+	if (new_size == 0)
+		return (free(line), NULL);
+	new_line = (char *)malloc((sizeof(char) * new_size) + 1);
+	if (!new_line)
+		return (NULL);
+	ft_memcpy(new_line, line, new_size);
+	new_line[new_size] = '\0';
+	free(line);
+	return (new_line);
 }
 
 char	*get_next_line(int fd)
 {
-	static char	*buffer = {0};
+	static char	buffer[FD_OPEN][BUFFER_SIZE + 1];
 	char		*line;
 
-	if (fd < 0)
-		return (NULL);
-	if ((buffer && !ft_strchr(buffer, '\n')) || !buffer)
-		buffer = read_buffer (fd, buffer);
-	if (!buffer)
-		return (NULL);
-	line = extract_line(buffer);
+	line = malloc(1);
 	if (!line)
-		return (free_buffer(&buffer));
-	buffer = trim_before_newline(buffer);
+		return (NULL);
+	*line = '\0';
+	if (fd < 0 || BUFFER_SIZE <= 0 || FD_OPEN < fd)
+		return (free(line), NULL);
+	line = ft_read_fd(buffer[fd], line, fd);
+	if (line == NULL)
+		return (NULL);
+	line = ft_prepare_line(line);
+	if (ft_strchr(buffer[fd], '\n'))
+		ft_memcpy(buffer[fd], ft_strchr(buffer[fd], '\n') + 1, \
+			ft_strlen(ft_strchr(buffer[fd], '\n') + 1) + 1);
 	return (line);
 }
 
-char	*free_buffer(char **buffer)
-{
-	free(*buffer);
-	*buffer = NULL;
-	return (NULL);
-}
+// int main()
+// {
+// 	int	fd;
+// 	fd = open("lorem2.txt", O_RDONLY);
+// 	if (fd == -1)
+// 	{
+// 		printf("Error al leer el archivo");
+// 		return (-1);
+// 	}
+// 		printf("llamada: %s__FIN\n\n", get_next_line(fd));
+// 		printf("\n============================================\n");
+// 		printf("llamada: %s__FIN\n\n", get_next_line(fd));
+// 		printf("\n============================================\n");
+// 		printf("llamada: %s__FIN\n\n", get_next_line(fd));
+// 		printf("\n============================================\n");
+// 		printf("llamada: %s__FIN\n\n", get_next_line(fd));
+// 		printf("\n============================================\n");
+// 		printf("llamada: %s__FIN\n\n", get_next_line(fd));
+// 		printf("\n============================================\n");
+// 		printf("llamada: %s__FIN\n\n", get_next_line(fd));
+// 		printf("\n============================================\n");
+// 		printf("llamada: %s__FIN\n\n", get_next_line(fd));
+// 		printf("\n============================================\n");
+// 	close(fd);
+//  }

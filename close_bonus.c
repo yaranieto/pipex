@@ -6,7 +6,7 @@
 /*   By: ynieto-s <ynieto-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/22 13:00:07 by ynieto-s          #+#    #+#             */
-/*   Updated: 2025/07/24 17:49:40 by ynieto-s         ###   ########.fr       */
+/*   Updated: 2025/07/29 17:55:33 by ynieto-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,17 +33,16 @@ void	handle_input_heredoc(char *limiter, int *pipefd)
 	while (1)
 	{
 		write(1, "heredoc> ", 9);
-		line = get_next_line(STDIN_FILENO);
+		line = get_next_line(0);
 		if (!line)
 			break ;
-		if (ft_strlen(line) == ft_strlen(limiter) + 1 &&
-			ft_strncmp(line, limiter, ft_strlen(limiter)) == 0
-			&& line[ft_strlen(limiter)] == '\n')
+		printf("LINE: %s\n", line);
+		if (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0)
 		{
 			free(line);
-			break ;
+			exit(0);
 		}
-		write(pipefd[1], line, ft_strlen(line));
+		ft_putstr_fd(line, pipefd[1]);
 		free(line);
 	}
 	close(pipefd[1]);

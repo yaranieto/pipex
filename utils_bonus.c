@@ -6,7 +6,7 @@
 /*   By: ynieto-s <ynieto-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 18:58:46 by ynieto-s          #+#    #+#             */
-/*   Updated: 2025/07/22 12:59:39 by ynieto-s         ###   ########.fr       */
+/*   Updated: 2025/07/29 18:12:08 by ynieto-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,14 +53,15 @@ int	**create_pipes(int num_pipes)
 void	wait_all(int num_cmd)
 {
 	int	i;
-	int	status;
+	//int	status;
 
 	i = 0;
 	while (i < num_cmd)
 	{
-		waitpid(-1, &status, 0);
+		waitpid(-1, NULL, 0);
 		i++;
 	}
+	
 }
 
 void	free_all(int num_pipes, int **pipes)

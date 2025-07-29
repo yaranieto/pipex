@@ -1,30 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strchr.c                                        :+:      :+:    :+:   */
+/*   ft_putstr_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ynieto-s <ynieto-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/15 12:29:38 by ynieto-s          #+#    #+#             */
-/*   Updated: 2025/07/29 16:24:00 by ynieto-s         ###   ########.fr       */
+/*   Created: 2023/12/18 12:41:36 by nquecedo          #+#    #+#             */
+/*   Updated: 2025/07/29 16:37:08 by ynieto-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-char	*ft_strchr(const char *str, int c)
+void	ft_putstr_fd(char *s, int fd)
 {
-	int		i;
-	char	*ptr;
-
-	if (!str)
-		return ((char *)str);
-	ptr = (char *)str;
-	i = 0;
-	while (ptr[i] != '\0' && ptr[i] != (char)c)
-		i++;
-	if (ptr[i] == (char)c)
-		return (&ptr[i]);
-	else
-		return (NULL);
+	write(fd, s, ft_strlen(s));
 }
+
+// int main()
+// {
+// 	ft_putstr_fd("hola mundo", 1);
+// 	return 0;
+// }

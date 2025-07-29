@@ -6,7 +6,7 @@
 /*   By: ynieto-s <ynieto-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 15:22:30 by ynieto-s          #+#    #+#             */
-/*   Updated: 2025/07/23 17:08:36 by ynieto-s         ###   ########.fr       */
+/*   Updated: 2025/07/29 17:29:48 by ynieto-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ typedef struct s_pipex
 	int		argc;
 	int		num_cmd;
 	int		is_heredoc;
+	int 	pipe_molon[2];
 }	t_pipex;
 char	**ft_split(const char *s, char c);
 void	free_split(char **str);
@@ -63,3 +64,6 @@ char	*extract_line(char *input_str);
 char	*read_buffer(int fd, char *buffer);
 char	*free_buffer(char **buffer);
 char	*get_next_line(int fd);
+void	*ft_memcpy(void *dest, const void *src, size_t n);
+void	ft_putstr_fd(char *s, int fd);
+

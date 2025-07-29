@@ -6,7 +6,7 @@
 /*   By: ynieto-s <ynieto-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 18:58:24 by ynieto-s          #+#    #+#             */
-/*   Updated: 2025/07/24 15:03:26 by ynieto-s         ###   ########.fr       */
+/*   Updated: 2025/07/29 18:15:49 by ynieto-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,9 @@ void	execute_all_bonus(t_pipex *px)
 	pid_t	pid;
 
 	i = 0;
+	if (pipe(px->pipe_molon))
+		error_exit("error_exit");
+
 	while (i < px->num_cmd)
 	{
 		pid = fork();
@@ -85,17 +88,15 @@ void	input_output_bonus(int i, t_pipex *px)
 void	handle_input_bonus(t_pipex *px)
 {
 	int	infile;
-	int	here_pipe[2];
 
 	if (px->is_heredoc)
 	{
-		if (pipe(here_pipe))
-			error_exit("error_exit");
-		handle_input_heredoc(px->argv[2], here_pipe);
-		dup2(here_pipe[0], STDIN_FILENO);
-		close(here_pipe[0]);
-		dup2(px->pipes[0][1], STDOUT_FILENO);
-		close(px->pipes[0][1]);
+		handle_input_heredoc(px->argv[2], px->pipe_molon);
+		dup2(px->pipe_molon[0], STDIN_FILENO);
+		close(px->pipe_molon[0]);
+		dup2(px->pipe_molon[1], STDOUT_FILENO);
+		close(px->pipe_molon[1]);
+		return ;
 	}
 	else
 	{
@@ -106,6 +107,7 @@ void	handle_input_bonus(t_pipex *px)
 		dup2(px->pipes[0][1], STDOUT_FILENO);
 		close(infile);
 		close_pipes(px->num_pipes, px->pipes);
+		close(px->pipe_molon[1]);
 	}
 }
 
@@ -115,14 +117,25 @@ void	handle_output_bonus(int i, t_pipex *px)
 	int	flags;
 
 	if (px->is_heredoc)
+	{
 		flags = O_WRONLY | O_CREAT | O_APPEND;
+		outfile = open(px->argv[px->argc - 1], flags, 0644);
+		dup2(px->pipe_molon[0], STDIN_FILENO);
+		dup2(outfile, STDOUT_FILENO);
+		close(px->pipe_molon[0]);
+		close(outfile);
+		return ;
+	}
 	else
+	{
 		flags = O_WRONLY | O_CREAT | O_TRUNC;
-	outfile = open(px->argv[px->argc - 1], flags, 0644);
-	if (outfile < 0)
-		error_exit("Error no outfile");
-	dup2(px->pipes[i - 1][0], STDIN_FILENO);
-	dup2(outfile, STDOUT_FILENO);
-	close(outfile);
-	close_pipes(px->num_pipes, px->pipes);
+		outfile = open(px->argv[px->argc - 1], flags, 0644);
+		if (outfile < 0)
+			error_exit("Error no outfile");
+		dup2(px->pipes[i - 1][0], STDIN_FILENO);
+		dup2(outfile, STDOUT_FILENO);
+		close_pipes(px->num_pipes, px->pipes);
+		close(outfile);
+	}
 }
+	
