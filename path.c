@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   path.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ynieto-s <ynieto-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 17:18:41 by ynieto-s          #+#    #+#             */
-/*   Updated: 2025/07/25 16:31:35 by ynieto-s         ###   ########.fr       */
+/*   Updated: 2025/07/31 15:43:28 by ynieto-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,10 @@ char	*find_path(char *cmd, char **envp)
 		return (NULL);
 	dirs_list = ft_split(path_env, ':');
 	if (!dirs_list)
+	{
+		free_split(dirs_list);
 		return (NULL);
+	}
 	path = all_path(cmd, dirs_list);
 	free_split(dirs_list);
 	return (path);

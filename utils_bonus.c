@@ -6,7 +6,7 @@
 /*   By: ynieto-s <ynieto-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 18:58:46 by ynieto-s          #+#    #+#             */
-/*   Updated: 2025/07/25 16:31:24 by ynieto-s         ###   ########.fr       */
+/*   Updated: 2025/08/04 13:18:48 by ynieto-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,25 +40,35 @@ int	**create_pipes(int num_pipes)
 	{
 		pipes[i] = malloc(sizeof(int) * 2);
 		if (!pipes[i])
+		{
+			free_all(i, pipes);
 			error_exit("Error no pipes");
+		}
 		if (pipe(pipes[i]) == -1)
+		{
+			free_all(i + 1, pipes);
 			error_exit("Error no pipes");
+		}
 		i++;
 	}
-	if (!pipes)
-		error_exit("Error no pipes");
 	return (pipes);
 }
 
 void	wait_all(int num_cmd)
 {
-	int	i;
-	int	status;
+	int		i;
+	int		status;
+	pid_t	pid;
 
 	i = 0;
 	while (i < num_cmd)
 	{
-		waitpid(-1, &status, 0);
+		pid = waitpid(-1, &status, 0);
+		if (pid == -1)
+		{
+			ft_putstr_fd("Error waiting for child process\n", 2);
+			break ;
+		}
 		i++;
 	}
 }
@@ -67,10 +77,18 @@ void	free_all(int num_pipes, int **pipes)
 {
 	int	i;
 
+	if (!pipes)
+		return ;
 	i = 0;
 	while (i < num_pipes)
 	{
-		free(pipes[i]);
+		if (pipes[i])
+		{
+			close(pipes[i][0]);
+			close(pipes[i][1]);
+			free(pipes[i]);
+			pipes[i] = NULL;
+		}
 		i++;
 	}
 	free(pipes);

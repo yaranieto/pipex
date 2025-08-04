@@ -1,40 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strjoin.c                                       :+:      :+:    :+:   */
+/*   error_exit.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ynieto-s <ynieto-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/14 17:40:27 by ynieto-s          #+#    #+#             */
-/*   Updated: 2025/07/25 18:23:49 by ynieto-s         ###   ########.fr       */
+/*   Created: 2025/07/31 12:59:06 by ynieto-s          #+#    #+#             */
+/*   Updated: 2025/08/04 14:07:52 by ynieto-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-char	*ft_strjoin(char const *s1, char const *s2)
+void	error_exit(const char *msg)
 {
-	int		i;
-	int		j;
-	char	*join;
+	ft_putstr_fd (msg, 2);
+	ft_putstr_fd ("\n", 2);
+	exit (1);
+}
 
-	if (!s1 || !s2)
-		return (NULL);
-	join = malloc((ft_strlen(s1) + ft_strlen(s2) + 1) * sizeof(char));
-	if (!join)
-		return (NULL);
+void	ft_putstr_fd(const char *s, int fd)
+{
+	int	i;
+
 	i = 0;
-	while (s1[i] != '\0')
+	if (s == NULL)
+		return ;
+	while (s[i] != '\0')
 	{
-		join[i] = s1[i];
+		write(fd, &s[i], 1);
 		i++;
 	}
-	j = 0;
-	while (s2[j] != '\0')
-	{
-		join[i + j] = s2[j];
-		j++;
-	}
-	join[i + j] = '\0';
-	return (join);
 }

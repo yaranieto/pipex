@@ -6,16 +6,16 @@
 /*   By: ynieto-s <ynieto-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 17:04:41 by ynieto-s          #+#    #+#             */
-/*   Updated: 2025/07/21 17:46:08 by ynieto-s         ###   ########.fr       */
+/*   Updated: 2025/07/31 12:37:02 by ynieto-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-static char	*ft_fill_to_array(const char *s, char c, int *index);
-static int	ft_size_word(const char *s, char c);
-static int	ft_div_word(const char *s, char c);
-static void	ft_clean_mem(char **array);
+char	*ft_fill_to_array(const char *s, char c, int *index);
+int		ft_size_word(const char *s, char c);
+int		ft_div_word(const char *s, char c);
+void	ft_clean_mem(char **array);
 
 char	**ft_split(const char *s, char c)
 {
@@ -46,7 +46,7 @@ char	**ft_split(const char *s, char c)
 	return (array);
 }
 
-static char	*ft_fill_to_array(const char *s, char c, int *index)
+char	*ft_fill_to_array(const char *s, char c, int *index)
 {
 	int			size;
 	int			i;
@@ -69,7 +69,7 @@ static char	*ft_fill_to_array(const char *s, char c, int *index)
 	return (word);
 }
 
-static int	ft_size_word(const char *s, char c)
+int	ft_size_word(const char *s, char c)
 {
 	int	size;
 
@@ -84,7 +84,7 @@ static int	ft_size_word(const char *s, char c)
 	return (size);
 }
 
-static int	ft_div_word(const char *s, char c)
+int	ft_div_word(const char *s, char c)
 {
 	int	count;
 	int	flag;
@@ -105,7 +105,7 @@ static int	ft_div_word(const char *s, char c)
 	return (count);
 }
 
-static void	ft_clean_mem(char **array)
+void	ft_clean_mem(char **array)
 {
 	int	i;
 
